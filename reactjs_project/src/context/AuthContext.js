@@ -1,32 +1,34 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { getUser } from "../api/auth";
+import { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("authToken");
+    const fetchUserDetails = async () => {
       if (token) {
         try {
-          const response = await getUser(token);
-          setUser(response.data);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/user`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUser(response.data); // Store user details in state
+          localStorage.setItem("userRole", response.data.role); // Store role in localStorage
         } catch (error) {
-          console.error("Error fetching user:", error);
+          console.error("Failed to fetch user details:", error);
           localStorage.removeItem("authToken");
+          setUser(null);
         }
       }
-      setLoading(false);
     };
 
-    fetchUser();
-  }, []);
+    fetchUserDetails();
+  }, [token]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
