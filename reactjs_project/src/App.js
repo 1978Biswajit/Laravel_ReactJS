@@ -4,6 +4,10 @@ import Dashboard from "./pages/Dashboard";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+import ProductList from './components/ProductList';
+import CreateProduct from './components/CreateProduct';
+import UpdateProduct from './components/UpdateProduct';
+
 
 function App() {
   return (
@@ -17,7 +21,12 @@ function App() {
             <Dashboard />
           </ProtectedRoute>
         } />
-
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/create" element={<CreateProduct />} />
+          <Route path="/update/:productId" element={<UpdateProduct />} />
+        </Routes>
+        
         {/* Protected Admin Panel (Only Admins) */}
         <Route path="/admin" element={
           <ProtectedRoute>
