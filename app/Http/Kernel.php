@@ -42,6 +42,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+        'api' => [\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        'throttle:api',\Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ],
         
         // Registering custom middleware here
         'admin' => \App\Http\Middleware\AdminMiddleware::class, // Added the 'admin' middleware
